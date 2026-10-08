@@ -1,1 +1,1146 @@
-<h1> Portfolio </h1>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>PIANO — Collection</title>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    /* =========================================================
+       RESET
+    ========================================================= */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #0b0b0b;
+      color: #f4f1eb;
+      font-family: "Inter", sans-serif;
+      overflow-x: hidden;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+
+    /* =========================================================
+       CURSOR
+    ========================================================= */
+
+    .cursor {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: white;
+      pointer-events: none;
+      z-index: 9999;
+
+      transform: translate(-50%, -50%);
+      transition:
+        width 0.25s ease,
+        height 0.25s ease,
+        background 0.25s ease;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease-out;
+    }
+
+    body.cursor-hover .cursor {
+      width: 7px;
+      height: 7px;
+    }
+
+    body.cursor-hover .cursor-ring {
+      width: 65px;
+      height: 65px;
+      border-color: rgba(255,255,255,0.9);
+    }
+
+
+    /* =========================================================
+       NAVIGATION
+    ========================================================= */
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 90px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 0 5vw;
+
+      z-index: 1000;
+
+      mix-blend-mode: difference;
+      color: white;
+    }
+
+    .logo {
+      font-size: 18px;
+      letter-spacing: 0.35em;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 35px;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .nav-links a {
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 0;
+      height: 1px;
+      background: white;
+      transition: width 0.4s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 700px;
+
+      overflow: hidden;
+    }
+
+    .hero-image {
+      position: absolute;
+      inset: -5%;
+
+      width: 110%;
+      height: 110%;
+
+      object-fit: cover;
+
+      filter: brightness(0.55);
+
+      transform: scale(1.05);
+      transition: transform 2s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .hero.loaded .hero-image {
+      transform: scale(1);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+
+      background:
+        linear-gradient(
+          to bottom,
+          rgba(0,0,0,0.15),
+          rgba(0,0,0,0.15) 50%,
+          rgba(0,0,0,0.75)
+        );
+    }
+
+    .hero-content {
+      position: absolute;
+      left: 7vw;
+      bottom: 11vh;
+      z-index: 2;
+    }
+
+    .hero-small {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+
+      opacity: 0;
+      transform: translateY(30px);
+
+      animation: reveal 1s 0.4s forwards;
+    }
+
+    .hero-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(70px, 12vw, 190px);
+      line-height: 0.8;
+      font-weight: 400;
+      letter-spacing: -0.05em;
+
+      opacity: 0;
+      transform: translateY(70px);
+
+      animation: reveal 1.2s 0.6s forwards;
+    }
+
+    .hero-description {
+      margin-top: 35px;
+      max-width: 380px;
+
+      font-size: 13px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.7);
+
+      opacity: 0;
+      transform: translateY(30px);
+
+      animation: reveal 1s 1s forwards;
+    }
+
+    @keyframes reveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+
+    /* =========================================================
+       SCROLL INDICATOR
+    ========================================================= */
+
+    .scroll-indicator {
+      position: absolute;
+      right: 5vw;
+      bottom: 50px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 70px;
+      background: rgba(255,255,255,0.5);
+
+      transform-origin: top;
+      animation: scrollLine 2s infinite;
+    }
+
+    @keyframes scrollLine {
+      0% {
+        transform: scaleY(0);
+        transform-origin: top;
+      }
+
+      45% {
+        transform: scaleY(1);
+        transform-origin: top;
+      }
+
+      55% {
+        transform: scaleY(1);
+        transform-origin: bottom;
+      }
+
+      100% {
+        transform: scaleY(0);
+        transform-origin: bottom;
+      }
+    }
+
+
+    /* =========================================================
+       INTRO
+    ========================================================= */
+
+    .intro {
+      padding: 180px 10vw;
+
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10vw;
+
+      background: #111;
+    }
+
+    .intro-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(40px, 5vw, 80px);
+      line-height: 1;
+    }
+
+    .intro-text {
+      align-self: end;
+
+      font-size: 14px;
+      line-height: 2;
+      color: rgba(255,255,255,0.55);
+      max-width: 450px;
+    }
+
+
+    /* =========================================================
+       PRODUCT GRID
+    ========================================================= */
+
+    .collection {
+      padding: 120px 5vw;
+      background: #111;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+
+      margin-bottom: 80px;
+    }
+
+    .section-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(45px, 6vw, 90px);
+      font-weight: 400;
+    }
+
+    .section-number {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .piano-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8vw 3vw;
+    }
+
+    .piano-card {
+      position: relative;
+      overflow: hidden;
+
+      cursor: pointer;
+    }
+
+    .piano-card:nth-child(even) {
+      margin-top: 160px;
+    }
+
+    .piano-image-wrapper {
+      position: relative;
+      overflow: hidden;
+      background: #191919;
+    }
+
+    .piano-image-wrapper::after {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      background: rgba(255,255,255,0.08);
+
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .piano-card:hover .piano-image-wrapper::after {
+      opacity: 1;
+    }
+
+    .piano-image {
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+
+      transform: scale(1.02);
+
+      transition:
+        transform 1.2s cubic-bezier(.2,.7,.2,1),
+        filter 0.8s ease;
+    }
+
+    .piano-card:hover .piano-image {
+      transform: scale(1.08);
+      filter: brightness(1.08);
+    }
+
+    .piano-info {
+      display: flex;
+      justify-content: space-between;
+
+      padding-top: 20px;
+    }
+
+    .piano-name {
+      font-family: "Playfair Display", serif;
+      font-size: 25px;
+    }
+
+    .piano-type {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+
+      color: rgba(255,255,255,0.4);
+    }
+
+
+    /* =========================================================
+       FULL WIDTH IMAGE
+    ========================================================= */
+
+    .feature {
+      position: relative;
+      height: 100vh;
+      min-height: 650px;
+
+      overflow: hidden;
+    }
+
+    .feature-image {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      height: 120%;
+
+      object-fit: cover;
+
+      transform: translateY(-8%);
+
+      filter: brightness(0.55);
+    }
+
+    .feature-content {
+      position: absolute;
+      left: 10vw;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      z-index: 2;
+    }
+
+    .feature-number {
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      margin-bottom: 25px;
+    }
+
+    .feature-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(60px, 10vw, 150px);
+      line-height: 0.85;
+    }
+
+
+    /* =========================================================
+       FINAL IMAGE
+    ========================================================= */
+
+    .final-image {
+      height: 90vh;
+      overflow: hidden;
+    }
+
+    .final-image img {
+      height: 120%;
+      object-fit: cover;
+      transform: translateY(-10%);
+    }
+
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+
+    footer {
+      min-height: 300px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 5vw;
+
+      background: #080808;
+    }
+
+    .footer-logo {
+      font-family: "Playfair Display", serif;
+      font-size: 55px;
+    }
+
+    .footer-text {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       SCROLL REVEAL
+    ========================================================= */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(70px);
+
+      transition:
+        opacity 1s ease,
+        transform 1s cubic-bezier(.2,.7,.2,1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    @media (max-width: 768px) {
+
+      .cursor,
+      .cursor-ring {
+        display: none;
+      }
+
+      nav {
+        height: 70px;
+        padding: 0 25px;
+      }
+
+      .nav-links {
+        gap: 15px;
+        font-size: 8px;
+      }
+
+      .hero {
+        min-height: 650px;
+      }
+
+      .hero-content {
+        left: 25px;
+        bottom: 100px;
+      }
+
+      .hero-title {
+        font-size: 75px;
+      }
+
+      .intro {
+        padding: 100px 25px;
+
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
+
+      .collection {
+        padding: 80px 25px;
+      }
+
+      .piano-grid {
+        grid-template-columns: 1fr;
+        gap: 70px;
+      }
+
+      .piano-card:nth-child(even) {
+        margin-top: 0;
+      }
+
+      .section-header {
+        margin-bottom: 50px;
+      }
+
+      .feature {
+        min-height: 600px;
+      }
+
+      .feature-content {
+        left: 25px;
+      }
+
+      footer {
+        padding: 60px 25px;
+
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 30px;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <!-- =======================================================
+       CURSOR
+  ======================================================== -->
+
+  <div class="cursor"></div>
+  <div class="cursor-ring"></div>
+
+
+  <!-- =======================================================
+       NAVIGATION
+  ======================================================== -->
+
+  <nav>
+
+    <a href="#" class="logo hover-target">
+      PIANO
+    </a>
+
+    <div class="nav-links">
+      <a href="#collection" class="hover-target">Collection</a>
+      <a href="#atelier" class="hover-target">Atelier</a>
+      <a href="#contact" class="hover-target">Contact</a>
+    </div>
+
+  </nav>
+
+
+  <!-- =======================================================
+       HERO
+  ======================================================== -->
+
+  <section class="hero">
+
+    <img
+      class="hero-image"
+      src="https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=2400&q=90"
+      alt="Grand piano"
+    >
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+
+      <div class="hero-small">
+        The Art of Sound
+      </div>
+
+      <h1 class="hero-title">
+        PIANO
+      </h1>
+
+      <p class="hero-description">
+        A collection of instruments created for those
+        who believe that music begins with beauty.
+      </p>
+
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       INTRO
+  ======================================================== -->
+
+  <section class="intro">
+
+    <h2 class="intro-title reveal">
+      Instruments<br>
+      with a soul.
+    </h2>
+
+    <p class="intro-text reveal">
+      Discover a carefully selected collection of grand,
+      upright and contemporary pianos. Every instrument
+      combines craftsmanship, character and timeless design.
+    </p>
+
+  </section>
+
+
+  <!-- =======================================================
+       COLLECTION
+  ======================================================== -->
+
+  <section class="collection" id="collection">
+
+    <div class="section-header reveal">
+
+      <h2 class="section-title">
+        Collection
+      </h2>
+
+      <span class="section-number">
+        01 — 04
+      </span>
+
+    </div>
+
+
+    <div class="piano-grid">
+
+
+      <!-- PIANO 01 -->
+
+      <article class="piano-card reveal hover-target">
+
+        <div class="piano-image-wrapper">
+
+          <img
+            class="piano-image"
+            src="https://images.unsplash.com/photo-1552422535-c45813c61732?auto=format&fit=crop&w=1400&q=90"
+            alt="Black grand piano"
+          >
+
+        </div>
+
+        <div class="piano-info">
+
+          <div class="piano-name">
+            Grand I
+          </div>
+
+          <div class="piano-type">
+            Grand Piano
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- PIANO 02 -->
+
+      <article class="piano-card reveal hover-target">
+
+        <div class="piano-image-wrapper">
+
+          <img
+            class="piano-image"
+            src="https://images.unsplash.com/photo-1529419412599-7bb870e11810?auto=format&fit=crop&w=1400&q=90"
+            alt="Piano"
+          >
+
+        </div>
+
+        <div class="piano-info">
+
+          <div class="piano-name">
+            Noir
+          </div>
+
+          <div class="piano-type">
+            Concert Series
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- PIANO 03 -->
+
+      <article class="piano-card reveal hover-target">
+
+        <div class="piano-image-wrapper">
+
+          <img
+            class="piano-image"
+            src="https://images.unsplash.com/photo-1514119412350-e174d90d280e?auto=format&fit=crop&w=1400&q=90"
+            alt="Classic piano"
+          >
+
+        </div>
+
+        <div class="piano-info">
+
+          <div class="piano-name">
+            Classic
+          </div>
+
+          <div class="piano-type">
+            Heritage
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- PIANO 04 -->
+
+      <article class="piano-card reveal hover-target">
+
+        <div class="piano-image-wrapper">
+
+          <img
+            class="piano-image"
+            src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1400&q=90"
+            alt="Modern piano"
+          >
+
+        </div>
+
+        <div class="piano-info">
+
+          <div class="piano-name">
+            Atelier
+          </div>
+
+          <div class="piano-type">
+            Limited Edition
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       FEATURE
+  ======================================================== -->
+
+  <section class="feature" id="atelier">
+
+    <img
+      class="feature-image"
+      src="https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=2400&q=90"
+      alt="Concert grand piano"
+    >
+
+    <div class="feature-content">
+
+      <div class="feature-number">
+        02 — ATELIER
+      </div>
+
+      <h2 class="feature-title">
+        Made<br>
+        to last.
+      </h2>
+
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       FINAL IMAGE
+  ======================================================== -->
+
+  <section class="final-image">
+
+    <img
+      src="https://images.unsplash.com/photo-1524205444758-0f4f0f4f4f4f?auto=format&fit=crop&w=2400&q=90"
+      alt="Piano detail"
+    >
+
+  </section>
+
+
+  <!-- =======================================================
+       FOOTER
+  ======================================================== -->
+
+  <footer id="contact">
+
+    <div class="footer-logo">
+      PIANO
+    </div>
+
+    <div class="footer-text">
+      Crafted for music
+    </div>
+
+  </footer>
+
+
+  <!-- =======================================================
+       JAVASCRIPT
+  ======================================================== -->
+
+  <script>
+
+    /* -------------------------------------------------------
+       HERO LOAD ANIMATION
+    ------------------------------------------------------- */
+
+    window.addEventListener("load", () => {
+
+      document.querySelector(".hero")
+        .classList.add("loaded");
+
+    });
+
+
+    /* -------------------------------------------------------
+       SCROLL REVEAL
+    ------------------------------------------------------- */
+
+    const revealElements =
+      document.querySelectorAll(".reveal");
+
+    const observer =
+      new IntersectionObserver(
+
+        (entries) => {
+
+          entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+
+              entry.target.classList.add("visible");
+
+              observer.unobserve(entry.target);
+
+            }
+
+          });
+
+        },
+
+        {
+          threshold: 0.15
+        }
+
+      );
+
+
+    revealElements.forEach(element => {
+
+      observer.observe(element);
+
+    });
+
+
+    /* -------------------------------------------------------
+       PARALLAX
+    ------------------------------------------------------- */
+
+    const parallaxImages =
+      document.querySelectorAll(
+        ".feature-image, .final-image img"
+      );
+
+    window.addEventListener("scroll", () => {
+
+      const scrollY = window.scrollY;
+
+      parallaxImages.forEach(image => {
+
+        const rect =
+          image.parentElement.getBoundingClientRect();
+
+        const center =
+          rect.top + rect.height / 2;
+
+        const distance =
+          center - window.innerHeight / 2;
+
+        const movement =
+          distance * -0.08;
+
+        image.style.transform =
+          `translateY(${movement}px)`;
+
+      });
+
+    });
+
+
+    /* -------------------------------------------------------
+       CUSTOM CURSOR
+    ------------------------------------------------------- */
+
+    const cursor =
+      document.querySelector(".cursor");
+
+    const ring =
+      document.querySelector(".cursor-ring");
+
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    let ringX = 0;
+    let ringY = 0;
+
+
+    document.addEventListener("mousemove", (event) => {
+
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+
+      cursor.style.left = mouseX + "px";
+      cursor.style.top = mouseY + "px";
+
+    });
+
+
+    function animateCursor() {
+
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+
+      ring.style.left = ringX + "px";
+      ring.style.top = ringY + "px";
+
+      requestAnimationFrame(animateCursor);
+
+    }
+
+    animateCursor();
+
+
+    /* -------------------------------------------------------
+       CURSOR HOVER EFFECT
+    ------------------------------------------------------- */
+
+    document.querySelectorAll(".hover-target")
+      .forEach(element => {
+
+        element.addEventListener("mouseenter", () => {
+
+          document.body.classList.add("cursor-hover");
+
+        });
+
+        element.addEventListener("mouseleave", () => {
+
+          document.body.classList.remove("cursor-hover");
+
+        });
+
+      });
+
+
+    /* -------------------------------------------------------
+       IMAGE MOUSE PARALLAX
+    ------------------------------------------------------- */
+
+    document.querySelectorAll(".piano-card")
+      .forEach(card => {
+
+        const image =
+          card.querySelector(".piano-image");
+
+
+        card.addEventListener("mousemove", (event) => {
+
+          const rect =
+            card.getBoundingClientRect();
+
+          const x =
+            (event.clientX - rect.left)
+            / rect.width - 0.5;
+
+          const y =
+            (event.clientY - rect.top)
+            / rect.height - 0.5;
+
+
+          image.style.transform =
+            `scale(1.08)
+             translate(${x * 8}px, ${y * 8}px)`;
+
+        });
+
+
+        card.addEventListener("mouseleave", () => {
+
+          image.style.transform =
+            "scale(1.02) translate(0, 0)";
+
+        });
+
+      });
+
+
+    /* -------------------------------------------------------
+       SMOOTH MOUSE WHEEL FEEL
+    ------------------------------------------------------- */
+
+    let lastScroll = 0;
+
+    window.addEventListener("scroll", () => {
+
+      const currentScroll =
+        window.scrollY;
+
+      const direction =
+        currentScroll > lastScroll
+          ? "down"
+          : "up";
+
+      document.body.dataset.scrollDirection =
+        direction;
+
+      lastScroll = currentScroll;
+
+    });
+
+  </script>
+
+</body>
+</html>
+```
